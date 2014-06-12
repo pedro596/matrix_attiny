@@ -12,36 +12,36 @@ ser.timeout  = 1
 
 
 r = {
-0:int('0b00000111',2),
-1:int('0b00000001',2),
-2:int('0b00000001',2),
-3:int('0b00000001',2),
-4:int('0b00000001',2),
-5:int('0b00000001',2),
-6:int('0b00000001',2),
-7:int('0b00000001',2)
+'0':int('0b10101111',2),
+'1':int('0b10000001',2),
+'2':int('0b10000001',2),
+'3':int('0b10000001',2),
+'4':int('0b00000001',2),
+'5':int('0b00000001',2),
+'6':int('0b00000001',2),
+'7':int('0b11101111',2)
 }
 
 g = {
-0:int('0b00000001',2),
-1:int('0b00000001',2),
-2:int('0b00000001',2),
-3:int('0b00000001',2),
-4:int('0b00000001',2),
-5:int('0b00000001',2),
-6:int('0b00000001',2),
-7:int('0b00000001',2)
+'0':int('0b11100111',2),
+'1':int('0b10000001',2),
+'2':int('0b10000001',2),
+'3':int('0b10000001',2),
+'4':int('0b00000001',2),
+'5':int('0b00000001',2),
+'6':int('0b00000001',2),
+'7':int('0b11101111',2)
 }
 
 b = {
-0:int('0b00000001',2),
-1:int('0b00000001',2),
-2:int('0b00000001',2),
-3:int('0b00000001',2),
-4:int('0b00000001',2),
-5:int('0b00000001',2),
-6:int('0b00000001',2),
-7:int('0b00000001',2)
+'0':int('0b11110111',2),
+'1':int('0b10000000',2),
+'2':int('0b10000001',2),
+'3':int('0b10000001',2),
+'4':int('0b00000001',2),
+'5':int('0b00000001',2),
+'6':int('0b00000001',2),
+'7':int('0b11111011',2)
 }
 
 
@@ -49,7 +49,7 @@ ser.port = "/dev/ttyUSB0"
 
 ser.open()
 
-matriz = {0:r, 1:g, 2:b};
+matriz = {'0':r, '1':g, '2':b};
 
 
 while True:
@@ -64,12 +64,13 @@ while True:
 		ser.write('1')							#in this case just send a '1' to unlock matrix soft. and try read again
 		continue
 
-	print pedido[request_start:request_end]		#so, if everything goes ok lets print it just for debug 
-	resposta = chr(matriz[int(pedido[request_start:(request_end-1)])][int(pedido[request_start+1:request_end])])
-	time.sleep(0.0001)
+	print pedido	#so, if everything goes ok lets print it just for debug 
+	resposta = chr(matriz[(pedido[request_start:(request_end-1)])][(pedido[request_start+1:request_end])])
+	#time.sleep(0.000001)
+	resposta = chr(0)
 	ser.write(resposta)
-	time.sleep(0.0001)
-	print ord(resposta)
+	#time.sleep(0.0002)
+	#print ord(resposta)
 
 
 	'''pedido = pedido[1:3]

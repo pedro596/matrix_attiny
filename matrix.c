@@ -33,7 +33,7 @@ uint32_t JoinData_out(uint8_t on_off, uint8_t r, uint8_t g , uint8_t b)
 		g_temp |= ((g>>i)&1)<<(7-i);
 	
 
-	//another cosmetics because the stupid rgm matrix pinout's...
+	//another cosmetics because the stupid rgb matrix pinout's...
 	
 	g = (g_temp>>4) | (g_temp<<4); 
 

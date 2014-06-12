@@ -1,6 +1,7 @@
 #include <avr/interrupt.h>
 #include <stdint.h>
 #include <string.h>
+#include <util/delay.h>
 #include "matrix.h"
 #include "BasicSerial3.h"
 
@@ -10,7 +11,7 @@ extern char RxTimedByte(char, char); /* 1.5 bit delay, 1 bit delay */
 
 volatile uint8_t text[50];
 volatile uint32_t data;
-volatile unsigned char timer=0;
+volatile uint8_t  timer=0;
 volatile uint8_t linha =0;
 volatile uint16_t change_letter=0;
 volatile uint8_t letter_number=0;
@@ -24,7 +25,7 @@ inline void HdInit()
 	/* 0.5ms shoud be ok  4000 clock operations between ticks  */ 
 	TCCR0A |= (1<<WGM01);
 	TCCR0B |= (1<<CS01);
-	OCR0A = 249;
+	OCR0A = 249; //249
 	TIMSK |= (1<<OCIE0A);
 
 	/*set outputs*/
@@ -58,15 +59,22 @@ int main()
 	    if(flag_comm>0){
 			
 		    TIMSK &= ~(1<<OCIE0A);						//desliga interrupção timer
-		    sprintf(text, "-%d%d-\n\r", request_count/8, request_count%8);
+		    sprintf(text, " -%d%d-\n", request_count/8, request_count%8);
 		    serOut(text);
 		    
-		    if(request_count<8)
-		    	red[request_count%8] = RxByte(); 	
-		    else if(request_count<16)
+		    if(request_count<8){
+		    	red[request_count%8] = RxByte();
+		    	/*_delay_us(200);
+		    	sprintf(text," valor lifo :%c -- request_count: %d", red[request_count], request_count);
+		    	serOut(text);
+		     	_delay_us(200);*/
+		    }
+		    else if(request_count<16){
 		    	green[request_count%8] = RxByte();
-		    else
+		    }
+		    else{
 		    	blue[request_count%8] = RxByte();
+		    }
 
    			if(request_count>22)
 		    	request_count=0;
@@ -84,37 +92,29 @@ int main()
 ISR(TIMER0_COMPA_vect){
 
 
-	timer++;
-	linha++;
-	change_letter++;
 
-	if(change_letter>5000)
-	{
-		letter_number++;
-		if(letter_number>20)
-			letter_number=0;
+	if(timer==0)
+		data = JoinData_out((1<<linha), red[linha], 255, 255);
+	else if(timer==1)
+		data = JoinData_out((1<<linha), 255,255, blue[linha]);
+	else if(timer==2)
+		data = JoinData_out((1<<linha), 255, green[linha], 255);
+	else if(timer==3)
+		flag_comm=1;
 
-		change_letter=0;
+
+	if(timer==3)
+		data = JoinData_out(0,255,255,255);
+
+	shift(data);
+
+
+	if(linha==0){
+		linha = 8;
+		timer++;
+		if(timer>3)	
+			timer = 0;
 	}
 
-
-
-	if(timer>23)		//12 ms 
-		timer = 0;
-	
-	if(linha>7)
-		linha = 0;
-	
-	if(timer<7)
-		data = JoinData_out((1<<linha), red[linha], 255, 255);
-	else if(timer<15)
-		data = JoinData_out((1<<linha), 255,255, blue[linha]);
-	else if(timer<23)
-		data = JoinData_out((1<<linha), 255, green[linha], 255);
-	else
-		flag_comm=1;
-	
-	if(timer<23)
-		shift(data);
-
+	linha--;
 }

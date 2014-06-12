@@ -6,6 +6,8 @@ obj/main.o: main.c /usr/lib/avr/include/avr/interrupt.h \
  /usr/lib/avr/include/avr/common.h /usr/lib/avr/include/avr/version.h \
  /usr/lib/avr/include/avr/fuse.h /usr/lib/avr/include/avr/lock.h \
  /usr/lib/avr/include/string.h /usr/lib/gcc/avr/4.8.2/include/stddef.h \
+ /usr/lib/avr/include/util/delay.h \
+ /usr/lib/avr/include/util/delay_basic.h /usr/lib/avr/include/math.h \
  matrix.h BasicSerial3.h
 
 /usr/lib/avr/include/avr/interrupt.h:
@@ -37,6 +39,12 @@ obj/main.o: main.c /usr/lib/avr/include/avr/interrupt.h \
 /usr/lib/avr/include/string.h:
 
 /usr/lib/gcc/avr/4.8.2/include/stddef.h:
+
+/usr/lib/avr/include/util/delay.h:
+
+/usr/lib/avr/include/util/delay_basic.h:
+
+/usr/lib/avr/include/math.h:
 
 matrix.h:
 
